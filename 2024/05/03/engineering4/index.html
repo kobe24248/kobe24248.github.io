@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>性能优化学习笔记4 | GuGuBird</title><meta name="author" content="gugubird,shuzy13@gmail.com"><meta name="copyright" content="gugubird"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="性能优化学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="性能优化学习笔记4">
+<meta property="og:url" content="http://example.com/2024/05/03/engineering4/index.html">
+<meta property="og:site_name" content="GuGuBird">
+<meta property="og:description" content="性能优化学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-05-03T11:30:50.000Z">
+<meta property="article:modified_time" content="2024-05-03T11:32:32.865Z">
+<meta property="article:author" content="gugubird">
+<meta property="article:tag" content="performance_engineering">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/05/03/engineering4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '性能优化学习笔记4',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-03 19:32:32'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.0"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/discuss/"><i class="fa-fw fas fa-solid fa-pen"></i><span> 奇思妙想</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/14/WQxHO96fkU5RJSe.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="GuGuBird"><img class="site-icon" src="/img/pglogo.jpg"/><span class="site-name">GuGuBird</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/discuss/"><i class="fa-fw fas fa-solid fa-pen"></i><span> 奇思妙想</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">性能优化学习笔记4</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-03T11:30:50.000Z" title="发表于 2024-05-03 19:30:50">2024-05-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-03T11:32:32.865Z" title="更新于 2024-05-03 19:32:32">2024-05-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/learning/">learning</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="性能优化学习笔记4"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="汇编语言和计算机体系结构"><a class="markdownIt-Anchor" href="#汇编语言和计算机体系结构"></a> 汇编语言和计算机体系结构</h1>
+<blockquote>
+<p>最好的接触底层的接口就是汇编语言</p>
+</blockquote>
+<p>预处理、编译、汇编、链接、加载、执行</p>
+<p>为什么我们要查看我们的汇编代码？</p>
+<ol>
+<li>汇编代码告诉了我们编译器做了什么以及没有做什么</li>
+<li>Bugs会被下降到一个更低的层次</li>
+<li>Reverse engineering，你可以看到别人的代码是怎么工作的（在软件领域，逆向工程一般是指根据机器代码或者字节码转换回高级语言代码）</li>
+</ol>
+<h2 id="x86-64-isa-primer"><a class="markdownIt-Anchor" href="#x86-64-isa-primer"></a> X86-64 ISA PRIMER</h2>
+<p>这里有四个主要的概念：</p>
+<ol>
+<li>Registers</li>
+<li>Memory addressing modes</li>
+<li>Instructions</li>
+<li>Data types</li>
+</ol>
+<p>x86-64 指令格式 ：&lt; opcode &gt; &lt; operand_list &gt;</p>
+<p>operand_list 通常由0个、1个、2个或者3个操作数组成（很少有三个的）</p>
+<p>正常情况下，所有的operands都是sources，并且有一个同时是source和destination</p>
+<p>对于这个语法，主要有两种：AT&amp;T和Intel，其中AT&amp;T是GNU汇编器的默认语法，而Intel是Windows汇编器的默认语法。在指令上面的区别在于AT&amp;T语法中，源操作数在目的操作数之前，而Intel语法中，源操作数在目的操作数之后。</p>
+<p>这里先介绍一些常用的Opcodes</p>
+<p><img src="https://s2.loli.net/2024/05/03/FkoSreYVWQmcJD2.png" alt="image-20240503125729641" /></p>
+<ol>
+<li>其中，对于mov指令，就是将一个寄存器的内容放入另一个寄存器中(PS:为什么不叫copy呢？ 😠)</li>
+<li>cmov 基于条件的copy(if flag equals to zero and so on…)</li>
+<li>做符号或者0的扩展，比如将32位变成64位操作数（将32位寄存器值移动到64位上面去，那么高位变换有两种，一种高位补0，一种补符号位）</li>
+<li>push 或 pop 做stack</li>
+</ol>
+<p>后面的一些指令不做赘述了</p>
+<h3 id="opcode-suffixes"><a class="markdownIt-Anchor" href="#opcode-suffixes"></a> Opcode Suffixes</h3>
+<p>实际上，Opcode可以被后缀扩充，比如后面可以跟上数据类型的描述或者条件代码</p>
+<img src="https://s2.loli.net/2024/05/03/upH6KgcosOewX4E.png" alt="image-20240503135843403" style="zoom: 80%;" />
+<p>有趣的是，x86-64的架构中，一个四字，是64位，也就是说，一个字在x86-64是16位</p>
+<h3 id="opcode-suffixes-for-extension"><a class="markdownIt-Anchor" href="#opcode-suffixes-for-extension"></a> Opcode Suffixes for Extension</h3>
+<p>符号扩展和零扩展，通常要结合两个后缀，因为扩展通常涉及数据类型的变换：</p>
+<p>比如：  movzbl %al, %edx 意思就是，我们做零扩展，第一个为字节，第二个类型为long类型</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>当一个32位的操作数被加载到64位的寄存器中时，其高位32位通常会被零填充（也就是零扩展）。这是因为在64位系统中，寄存器的宽度是64位，所以当它们需要存储或操作一个32位的数时，需要有一种方法来处理这个位宽的差异。零扩展就是其中一种常见的方法，它通过在高位添加零，将32位的数扩展到64位。</p>
+</blockquote>
+<p>而对于条件操作，通常我们也会使用一个到两个的后缀符号去表明条件代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmpq $4096, %r14</span><br><span class="line"></span><br><span class="line">jne .LBB1_1</span><br></pre></td></tr></table></figure>
+<p>很明显，这里比较的是not equal，进行比较期间，会在RFLAGS寄存器中设置一个FLAG，以此来决定是否进行跳转。</p>
+<blockquote>
+<p>所有的条件代码，比较的都是FLAG，只看FLAG，而FLAG与结果相关</p>
+</blockquote>
+<h3 id="三种直接寻址和间接寻址模式"><a class="markdownIt-Anchor" href="#三种直接寻址和间接寻址模式"></a> 三种直接寻址和间接寻址模式</h3>
+<p>首先是直接寻址：</p>
+<img src="https://s2.loli.net/2024/05/03/TOvuPLX9JEr2f4i.png" alt="image-20240503141754380" style="zoom:80%;" />
+<p><strong>特别对于直接内存访问（上图的第三条指令）</strong>：如果CPU直接从内存中获取值，而不是从寄存器或者cache中获取，我们要花费几百个甚至更多时钟周期（处理器太快了！CPU要等待内存将数据传输给CPU 😟）</p>
+<p>很明显，如果你把数据放在寄存器里面，你可以在一个周期内访问大多数的寄存器。因此，任何操作我们都是希望数据离CPU更近一点，即使CPU离数据远的情况，即我们需要访存的情况下，我们也希望在访存的时候能干其他事情以提高效率。<strong>所以硬件就是通过这一核心思想去组件的！</strong></p>
+<p>然后是间接寻址：</p>
+<p><img src="https://s2.loli.net/2024/05/03/2ktzPCxf7gIbKsG.png" alt="image-20240503143243120" /></p>
+<p>第一种就是寄存器内容即地址，第二种即寄存器内容+偏移量就是地址。而对于第三种，这种情况下，通常都是基于Jump指令的，在<code>mov 172(%rip), %rdi</code>这条指令中，<code>172(%rip)</code>表示的是从<code>rip</code>寄存器的当前值开始，向后偏移172字节的地址。这里的偏移是相对于下一条指令的地址，而不是当前指令的地址。这种方法常用于实现位置无关代码（Position Independent Code，PIC），这样的代码可以在内存中的任何位置运行，这在动态链接库和执行时代码生成等场景中非常有用。同时，也有可能并非jump指令，我们也有一种可能，就是把数据存储在这个指令流之中，这样不会破坏任何寄存器。</p>
+<h3 id="base-indexed-scale-displacement"><a class="markdownIt-Anchor" href="#base-indexed-scale-displacement"></a> Base Indexed Scale Displacement</h3>
+<p>x86-64支持的最常见的间接寻址就是这个方式。这种方式通常用于在堆栈内存中，我们会经常看到这种访问方式。(这种方式更加灵活，可以访问到我想要的数据)</p>
+<p><img src="https://s2.loli.net/2024/05/03/9NknRBZOEvFVQo3.png" alt="image-20240503144232787" /></p>
+<h3 id="常用的汇编语言使用风格"><a class="markdownIt-Anchor" href="#常用的汇编语言使用风格"></a> 常用的汇编语言使用风格</h3>
+<ul>
+<li>如果我们想清除一个寄存器的内容，我们常常会看到： xor %rax, %rax    【这种操作要比将零常数放到指令里面更快、更容易】</li>
+<li>想看一个数是否为0，我们使用 test %rcx, %rcx 【test计算的是两个操作数的按位与，并忽视掉最后的结果，仅仅保留RFLAGS】</li>
+<li>为了进行对齐或者代码大小优化，x86-64通常会有一个nop操作，比如说，如果你想对你的函数在缓存行的开头执行，那么它可以确保你这样执行。所以核心是内存的优化。这个指令如下：data16 data16 data16 nopw %cs:0x0(%rax, %rax, 1)  这条指令什么也不执行，其中data16保留了两个字节的nop</li>
+</ul>
+<p><img src="https://s2.loli.net/2024/05/03/jLr1bn24aiFqshp.png" alt="image-20240503145335532" /></p>
+<h2 id="浮点数和矢量硬件"><a class="markdownIt-Anchor" href="#浮点数和矢量硬件"></a> 浮点数和矢量硬件</h2>
+<h3 id="floating-point-instruction-sets"><a class="markdownIt-Anchor" href="#floating-point-instruction-sets"></a> Floating-Point Instruction Sets</h3>
+<p>现代通常对于浮点数标量的运算都是通过几个不同的指令集实现的。最初的80-86是没有浮点单元的，它们是在软件中实现的，后面随着小型化的发展，它们就被集成了等等。</p>
+<h3 id="vector-hardware"><a class="markdownIt-Anchor" href="#vector-hardware"></a> Vector Hardware</h3>
+<blockquote>
+<p>矢量即一组操作数，这组操作数通常需要进行并行处理。因此我们定义矢量长度为包含多少个并行处理操作。</p>
+</blockquote>
+<img src="https://s2.loli.net/2024/05/03/elqpgYitVDfcQnZ.png" alt="image-20240503160007236" style="zoom:80%;" />
+<p>这是一种并行计算的主流方式，比如一个矢量有四个单元，那么就被分为4个lane，四个lane并行去执行任务，但是，它们必须要做完全相同的事情，也就是说，<strong>所有的vector lanes的操作都是 lock-step的并且使用的是相同的指令和控制信号，这一点在图中很好看出来。</strong></p>
+<p>现代的机器支持对齐和非对齐的矢量处理（即操作数是对齐的），如果不支持未对齐的运算，并且机器不知道你有没有对齐，那么就变成了对标量的处理；如果机器支持未对齐的运算，那么对齐的情况下对比未对齐的情况，对齐的情况要处理更快一点。【现代的机器在对齐和未对齐上都有很好的性能 😳】</p>
+<p>而对于某些体系架构，是支持对不同的lane进行shuffle或者提取子集等等操作的，比如我们在pytorch经常看到的scatter操作（分散）</p>
+<p>现代的x86-64支持多种不同矢量指令集合，比如 SSE指令集、AVX指令集、AVX2、AVX3等等</p>
+<h2 id="体系结构"><a class="markdownIt-Anchor" href="#体系结构"></a> 体系结构</h2>
+<p>历史上，人们认为有两种方式可以使得处理器更快：</p>
+<ol>
+<li>利用并行计算同时执行多个指令</li>
+<li>利用局部性以最小化数据移动（实际上寄存器的设计就是）</li>
+</ol>
+<h3 id="ilpinstruction-level-parallelism"><a class="markdownIt-Anchor" href="#ilpinstruction-level-parallelism"></a> ILP(instruction-level-parallelism)</h3>
+<blockquote>
+<p>核心思想是基于不同的pipeline stages，找到去同时执行多条指令的机会，</p>
+</blockquote>
+<p>可是流水线架构的设计，很容易出现stall，这种stall是由于hazards导致的，有三种hazards：</p>
+<ol>
+<li>结构冒险：两条指令都要用同一个功能单元</li>
+<li>数据冒险：一条指令以来上一条指令的管道输出</li>
+<li>控制冒险：比如跳转指令，这会使得取指和译码被延迟</li>
+</ol>
+<p>对于数据冒险，有三种类型：</p>
+<img src="https://s2.loli.net/2024/05/03/MtkaDgWqwTCZuFX.png" alt="image-20240503191010120" style="zoom:80%;" />
+<p>其中，对于第三种，实际上我们可能会以为这两条指令的实际效果等同于执行最后一条指令，但是实际上并不是。</p>
+<p>原因如下：</p>
+<ul>
+<li>可能第一条指令只是想去设置一些FLAGS</li>
+<li>可能这个指令使用了某个寄存器的别名，也就是说这个寄存器只是别名而已</li>
+</ul>
+<h3 id="complex-operations"><a class="markdownIt-Anchor" href="#complex-operations"></a> Complex Operations</h3>
+<p>有一个特别值得关注的复杂运算是FMA，即fuse-multiply-adds，这个是浮点数的乘加运算，这个之所以重要，是因为线性运算的存在。即点积</p>
+<p>而体系结构是如何设计的呢？——其思想就是为这些复杂的操作设计专门的运算单元、寄存器，因此流水线的pipeline就不止五个了</p>
+<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240503192133882.png" alt="image-20240503192133882" style="zoom:80%;" />
+<p>这样，处理不同数据，走的路径也就不同。那么，设计师对于并行的思想就是在一个周期中去提出多个指令，而不是像传统的流水线CPU那样一个周期只进行一个操作。因为它们互不干扰</p>
+<h3 id="bypassing"><a class="markdownIt-Anchor" href="#bypassing"></a> Bypassing</h3>
+<blockquote>
+<p>与其等待上一条数据被存到寄存器里面，不如设置一个旁路，识别这种特殊情况，然后直接馈入数据给下一条需要的指令</p>
+</blockquote>
+<p>不需要特别了解，后面体系架构再学了 😰</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">gugubird</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/05/03/engineering4/">http://example.com/2024/05/03/engineering4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">GuGuBird</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/performance-engineering/">performance_engineering</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>欢迎打赏！</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/wechat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.png" target="_blank"><img class="post-qr-code-img" src="/img/alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/05/03/engineering5/" title="性能优化学习笔记5"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">性能优化学习笔记5</div></div></a></div><div class="next-post pull-right"><a href="/2024/05/02/engineering3/" title="性能优化学习笔记3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">性能优化学习笔记3</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/03/14/engineering1/" title="性能优化学习笔记1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-14</div><div class="title">性能优化学习笔记1</div></div></a></div><div><a href="/2024/06/06/engineering11/" title="性能优化学习笔记11"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-06</div><div class="title">性能优化学习笔记11</div></div></a></div><div><a href="/2024/06/06/engineering10/" title="性能优化学习笔记10"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-06</div><div class="title">性能优化学习笔记10</div></div></a></div><div><a href="/2024/06/13/engineering12/" title="性能优化学习笔记12"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-13</div><div class="title">性能优化学习笔记12</div></div></a></div><div><a href="/2024/10/16/engineering13/" title="性能优化学习笔记13"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-16</div><div class="title">性能优化学习笔记13</div></div></a></div><div><a href="/2024/03/31/engineering2/" title="性能优化学习笔记2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-31</div><div class="title">性能优化学习笔记2</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">gugubird</div><div class="author-info__description">智勇还需努力</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/gugubird13"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/gugubird13" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:shuzy13@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">爱你老爸老妈，明天见！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E5%92%8C%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text"> 汇编语言和计算机体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#x86-64-isa-primer"><span class="toc-number">1.1.</span> <span class="toc-text"> X86-64 ISA PRIMER</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#opcode-suffixes"><span class="toc-number">1.1.1.</span> <span class="toc-text"> Opcode Suffixes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#opcode-suffixes-for-extension"><span class="toc-number">1.1.2.</span> <span class="toc-text"> Opcode Suffixes for Extension</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E7%9B%B4%E6%8E%A5%E5%AF%BB%E5%9D%80%E5%92%8C%E9%97%B4%E6%8E%A5%E5%AF%BB%E5%9D%80%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text"> 三种直接寻址和间接寻址模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#base-indexed-scale-displacement"><span class="toc-number">1.1.4.</span> <span class="toc-text"> Base Indexed Scale Displacement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E4%BD%BF%E7%94%A8%E9%A3%8E%E6%A0%BC"><span class="toc-number">1.1.5.</span> <span class="toc-text"> 常用的汇编语言使用风格</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E5%92%8C%E7%9F%A2%E9%87%8F%E7%A1%AC%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text"> 浮点数和矢量硬件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#floating-point-instruction-sets"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Floating-Point Instruction Sets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vector-hardware"><span class="toc-number">1.2.2.</span> <span class="toc-text"> Vector Hardware</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.</span> <span class="toc-text"> 体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ilpinstruction-level-parallelism"><span class="toc-number">1.3.1.</span> <span class="toc-text"> ILP(instruction-level-parallelism)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#complex-operations"><span class="toc-number">1.3.2.</span> <span class="toc-text"> Complex Operations</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bypassing"><span class="toc-number">1.3.3.</span> <span class="toc-text"> Bypassing</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/16/engineering13/" title="性能优化学习笔记13">性能优化学习笔记13</a><time datetime="2024-10-16T09:06:12.000Z" title="发表于 2024-10-16 17:06:12">2024-10-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/26/algorithms/" title="算法复习_简单数据结构">算法复习_简单数据结构</a><time datetime="2024-09-26T13:30:17.000Z" title="发表于 2024-09-26 21:30:17">2024-09-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/13/engineering12/" title="性能优化学习笔记12">性能优化学习笔记12</a><time datetime="2024-06-13T11:19:13.000Z" title="发表于 2024-06-13 19:19:13">2024-06-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/06/engineering11/" title="性能优化学习笔记11">性能优化学习笔记11</a><time datetime="2024-06-06T14:22:22.000Z" title="发表于 2024-06-06 22:22:22">2024-06-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/06/engineering10/" title="性能优化学习笔记10">性能优化学习笔记10</a><time datetime="2024-06-06T05:41:12.000Z" title="发表于 2024-06-06 13:41:12">2024-06-06</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By gugubird</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
